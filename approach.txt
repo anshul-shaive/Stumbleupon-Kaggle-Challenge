@@ -1,0 +1,33 @@
+After downloading and extracting the data, I loaded the tsv(tab seprated) files into pandas dataframes.
+Performed some EDA and created dataframes for X_train, X_test, Y_train.
+
+Converted categorical variable to numerical (binary) using one hot encoding 
+and added some columns in test with all zeros to make both train and test have same number of features.
+
+Kept 20% data aside for validation and trained a RandomForestClassifier using just the numerical data.
+Accuracy on validation was 70%, precision 0.72, recall 0.65
+
+After that, for using text features (boilerplate column) I used tokenizer() from sklearn
+and converted text to a vector of numbers, then did some sequence variable analysis to find
+max numerical value in the converted vectors and set a variable for max text sequence according to which
+all vectors will be padded for training using pad_sequence from sklearn.
+
+Defined a RnnModel class, model has Embedding, LSTM, Dropout, BatchNormalization and Dense layers,
+with cross_entropy loss and adam optimizer.
+Trained the model and tested on validations set, got around 75% accuracy on validation set.
+
+Finally, used USE (Universal Sentence Encoder) from tensorflow_hub and converted the text data 
+to sentence level embedding. USE returns a 512 dimensional vector 
+which has sentence endcoding (don't need to use a Sequential model such as LSTM with that).
+
+Trained a RandomForestClassifier on the concatenated training set (numerical features + 512 USE features)
+Final metrics from the 20% set aside validation data:
+Accuracy: 81.4%, precision: 0.86, recall: 0.75
+seprately for classes (from classification_report):
+class 0: {'precision': 0.7724477244772447,
+          'recall': 0.8746518105849582,
+          'f1-score': 0.8203788373612019}
+
+class 1: {'precision': 0.8648648648648649,
+          'recall': 0.7568988173455979,
+          'f1-score': 0.8072880168185004}
